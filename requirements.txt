@@ -7,3 +7,4 @@ email_validator==2.0.0.post2
 python-dotenv==1.0.0
 aiohttp==3.8.5
 asyncio==3.4.3
+werkzeug==2.3.7
