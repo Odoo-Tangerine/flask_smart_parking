@@ -4,10 +4,9 @@ import requests
 import logging
 import aiohttp
 from typing import Dict, Any, Optional
-from .common_logging import Logging
 from os import environ
 
-_logger = Logging(filename='flask.server', exec_name=__name__).get_logger()
+_logger = logging.getLogger(__name__)
 
 ODOO_SERVER_DOMAIN = environ.get('ODOO_SERVER_DOMAIN')
 ODOO_WORK_DB = environ.get('ODOO_WORK_DB')
@@ -49,10 +48,8 @@ class ServiceAPI:
             )
             bufferer_image = pickle.dumps(dict(image_face_bytes=image_face_bytes,
                                                image_license_plate_bytes=image_license_plate_bytes))
-            _logger.info(f'[ServiceAPI]: {url}')
             response = await OdooAPI.make_request(url=url, method='POST', data=bufferer_image,
                                                   headers={'Content-type': 'application/octet-stream'})
-            _logger.info(f'[ServiceAPI]: {response}')
             return OdooAPI.check_response(response)
         except Exception as e:
             _logger.exception(e)
@@ -64,9 +61,7 @@ class IndexAPI:
     async def info() -> Optional[Dict[str, Dict[str, Any]]]:
         try:
             url = f'{ODOO_SERVER_DOMAIN}/odoo-api/spp/index/info'
-            _logger.info(f'[IndexAPI]: {url}')
             response = await OdooAPI.make_request(url=url, method='GET')
-            _logger.info(f'[IndexAPI]: {response}')
             return OdooAPI.check_response(response)
         except Exception as e:
             _logger.exception(e)
@@ -79,9 +74,7 @@ class UserAPI:
         try:
             url = f'{ODOO_SERVER_DOMAIN}/web/session/authenticate'
             data = dict(params=dict(db=ODOO_WORK_DB, login=email, password=password))
-            _logger.info(f'[UserAPI]: {url}: {data}')
             response = await OdooAPI.make_request(url=url, method='GET', json=data)
-            _logger.info(f'[UserAPI]: {response}')
             return OdooAPI.check_response(response)
         except Exception as e:
             _logger.exception(e)
@@ -90,9 +83,7 @@ class UserAPI:
     async def sign_out():
         try:
             url = f'{ODOO_SERVER_DOMAIN}/odoo-api/spp/user/sign_out'
-            _logger.info(f'[UserAPI]: {url}')
             response = await OdooAPI.make_request(url=url, method='POST')
-            _logger.info(f'[UserAPI]: {response}')
             return OdooAPI.check_response(response)
         except Exception as e:
             _logger.exception(e)
@@ -102,9 +93,7 @@ class UserAPI:
         try:
             url = f'{ODOO_SERVER_DOMAIN}/odoo-api/spp/user/sign_up'
             data = dict(login=login, password=password, name=fullname)
-            _logger.info(f'[UserAPI]: {url}: {data}')
             response = await OdooAPI.make_request(url=url, method='POST', json=data)
-            _logger.info(f'[UserAPI]: {response}')
             return OdooAPI.check_response(response)
         except Exception as e:
             _logger.exception(e)
@@ -113,9 +102,7 @@ class UserAPI:
     async def profile(uid):
         try:
             url = f'{ODOO_SERVER_DOMAIN}/odoo-api/spp/user/profile?uid={uid}'
-            _logger.info(f'[UserAPI]: {url}')
             response = await OdooAPI.make_request(url=url, method='POST')
-            _logger.info(f'[UserAPI]: {response}')
             return OdooAPI.check_response(response)
         except Exception as e:
             _logger.exception(e)
